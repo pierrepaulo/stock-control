@@ -23,6 +23,13 @@ export const login = async (email: string, password: string) => {
   return { ...userFormatted, token };
 };
 
+export const logout = async (token: string) => {
+  await db
+    .update(users)
+    .set({ token: null, updatedAt: new Date() })
+    .where(eq(users.token, token));
+};
+
 export const createUser = async (data: NewUser) => {
   const existingUser = await getUserByEmail(data.email);
   if (existingUser) {
