@@ -23,3 +23,12 @@ export const logout: RequestHandler = async (req, res) => {
   }
   res.json({ error: null, data: { message: "Logout realizado com sucesso" } });
 };
+
+export const getMe: RequestHandler = async (req, res) => {
+  if (!req.user) return null;
+
+  const user = await userService.getUserByIdPublic(req.user.id);
+  if (!user) throw new AppError("Usuário não encontrado", 404);
+
+  res.json({ error: null, data: user });
+};
