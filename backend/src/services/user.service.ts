@@ -1,6 +1,6 @@
 import { NewUser, User, users } from "../db/schema";
 import { db } from "../db/connection";
-import { eq } from "drizzle-orm";
+import { eq, isNull } from "drizzle-orm";
 import bcrypt from "bcrypt";
 import { AppError } from "../utils/apperror";
 import crypto from "crypto";
@@ -48,6 +48,16 @@ export const createUser = async (data: NewUser) => {
   return formatUser(user);
 };
 
+export const listUsers = async (offset: number = 0, limit: number = 10) => {
+  const userList = await db
+    .select()
+    .from(users)
+    .where(isNull(users.deletedAt))
+    .offset(offset)
+    .limit(limit);
+  return userList.map(formatUser);
+};
+
 export const validateToken = async (token: string) => {
   const result = await db
     .select()
@@ -60,7 +70,6 @@ export const validateToken = async (token: string) => {
   return user;
 };
 
-// Helper function
 export const getUserById = async (id: string) => {
   const result = await db.select().from(users).where(eq(users.id, id)).limit(1);
 
