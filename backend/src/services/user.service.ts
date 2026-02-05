@@ -58,6 +58,16 @@ export const listUsers = async (offset: number = 0, limit: number = 10) => {
   return userList.map(formatUser);
 };
 
+export const deleteUser = async (id: string) => {
+  const result = await db
+    .update(users)
+    .set({ deletedAt: new Date() })
+    .where(eq(users.id, id))
+    .returning();
+
+  return result[0] ?? null;
+};
+
 export const validateToken = async (token: string) => {
   const result = await db
     .select()

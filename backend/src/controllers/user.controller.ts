@@ -25,3 +25,10 @@ export const getUser: RequestHandler = async (req, res) => {
   if (!user) throw new AppError("Usuário não encontrado", 404);
   res.status(200).json({ error: null, data: user });
 };
+
+export const deleteUser: RequestHandler = async (req, res) => {
+  const { id } = getUserByIdSchema.parse(req.params);
+  const deletedUser = await userService.deleteUser(id);
+  if (!deletedUser) throw new AppError("Usuário não encontrado", 404);
+  res.status(200).json({ error: null, data: null });
+};
