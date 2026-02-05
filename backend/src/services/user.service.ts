@@ -4,6 +4,7 @@ import { eq, isNull } from "drizzle-orm";
 import bcrypt from "bcrypt";
 import { AppError } from "../utils/apperror";
 import crypto from "crypto";
+import { deleteAvatar } from "./file.service";
 
 export const login = async (email: string, password: string) => {
   const user = await getUserByEmail(email);
@@ -68,6 +69,41 @@ export const deleteUser = async (id: string) => {
   return result[0] ?? null;
 };
 
+export const updateUser = async (id: string, data: Partial<NewUser>) => {
+  const userToUpdate = await getUserById(id);
+  if (!userToUpdate) throw new AppError("Usuário não encontrado", 404);
+
+  if (data.email && data.email !== userToUpdate.email) {
+    const emailInUse = await getUserByEmail(data.email);
+    if (emailInUse) {
+      throw new AppError("Email já está em uso", 400);
+    }
+  }
+
+  const updateData: Partial<NewUser> = { ...data };
+  if (data.password) {
+    updateData.password = await hashPassword(data.password);
+  }
+
+  if (
+    data.avatar &&
+    userToUpdate.avatar &&
+    data.avatar !== userToUpdate.avatar
+  ) {
+    await deleteAvatar(userToUpdate.avatar);
+  }
+
+  updateData.updatedAt = new Date();
+  const result = await db
+    .update(users)
+    .set(updateData)
+    .where(eq(users.id, id))
+    .returning();
+  const updatedUser = result[0];
+
+  return formatUser(updatedUser);
+};
+
 export const validateToken = async (token: string) => {
   const result = await db
     .select()
@@ -94,7 +130,10 @@ export const getUserByIdPublic = async (id: string) => {
   return formatUser(user);
 };
 
-export const getUserByEmail = async (email: string) => {
+export const getUserByEmail = async (
+  email: string,
+  includeDeleted: boolean = false,
+) => {
   const result = await db
     .select()
     .from(users)
@@ -102,7 +141,8 @@ export const getUserByEmail = async (email: string) => {
     .limit(1);
 
   const user = result[0];
-  if (!user || user.deletedAt) return null;
+  if (!user) return null;
+  if (user && user.deletedAt && includeDeleted === false) return null;
   return user;
 };
 

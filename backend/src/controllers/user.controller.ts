@@ -3,9 +3,11 @@ import {
   createUserSchema,
   getUserByIdSchema,
   listUsersSchema,
+  updateUserSchema,
 } from "../validators/user.validator";
 import * as userService from "../services/user.service";
 import { AppError } from "../utils/apperror";
+import { saveAvatar } from "../services/file.service";
 
 export const createUser: RequestHandler = async (req, res) => {
   const data = createUserSchema.parse(req.body);
@@ -24,6 +26,22 @@ export const getUser: RequestHandler = async (req, res) => {
   const user = await userService.getUserByIdPublic(id);
   if (!user) throw new AppError("Usuário não encontrado", 404);
   res.status(200).json({ error: null, data: user });
+};
+
+export const updateUser: RequestHandler = async (req, res) => {
+  const { id } = getUserByIdSchema.parse(req.params);
+  const data = updateUserSchema.parse(req.body);
+
+  let avatarFileName: string | undefined;
+  if (req.file) {
+    avatarFileName = await saveAvatar(req.file.buffer, req.file.originalname);
+  }
+
+  const updateData = { ...data };
+  if (avatarFileName) updateData.avatar = avatarFileName;
+
+  const updatedUser = await userService.updateUser(id, updateData);
+  res.status(200).json({ error: null, data: updatedUser });
 };
 
 export const deleteUser: RequestHandler = async (req, res) => {
