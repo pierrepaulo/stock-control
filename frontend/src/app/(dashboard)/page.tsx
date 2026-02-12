@@ -1,29 +1,43 @@
-"use client";
-
-import { Button } from "@/components/ui/button";
-import { useAuth } from "@/hooks/use-auth";
-
 export default function DashboardHomePage() {
-  const { logout, user } = useAuth();
-
   return (
-    <main className="mx-auto flex min-h-screen w-full max-w-4xl flex-col gap-6 px-4 py-8">
-      <header className="space-y-1">
-        <h1 className="text-2xl font-semibold text-zinc-900">Stock Control</h1>
-        <p className="text-sm text-zinc-600">
-          Sessao ativa para <strong>{user?.name}</strong> ({user?.email}).
+    <main className="space-y-6">
+      <section className="space-y-1">
+        <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
+        <p className="text-muted-foreground text-sm">
+          Bem-vindo ao painel do Stock Control. Selecione um modulo na navegacao lateral para
+          comecar.
         </p>
-      </header>
-
-      <section className="rounded-lg border border-zinc-200 bg-white p-4">
-        <p className="text-sm text-zinc-700">teste teste teste</p>
       </section>
 
-      <div>
-        <Button type="button" variant="outline" onClick={() => void logout()}>
-          Sair
-        </Button>
-      </div>
+      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <article className="rounded-lg border p-4">
+          <h2 className="text-sm font-medium">Produtos</h2>
+          <p className="text-muted-foreground mt-2 text-sm">
+            Cadastro e controle de estoque dos produtos.
+          </p>
+        </article>
+
+        <article className="rounded-lg border p-4">
+          <h2 className="text-sm font-medium">Categorias</h2>
+          <p className="text-muted-foreground mt-2 text-sm">
+            Organizacao dos produtos por grupos de categoria.
+          </p>
+        </article>
+
+        <article className="rounded-lg border p-4">
+          <h2 className="text-sm font-medium">Movimentacoes</h2>
+          <p className="text-muted-foreground mt-2 text-sm">
+            Registro de entradas e saidas com rastreabilidade.
+          </p>
+        </article>
+
+        <article className="rounded-lg border p-4">
+          <h2 className="text-sm font-medium">Usuarios</h2>
+          <p className="text-muted-foreground mt-2 text-sm">
+            Gestao de usuarios e perfis de acesso.
+          </p>
+        </article>
+      </section>
     </main>
   );
 }
