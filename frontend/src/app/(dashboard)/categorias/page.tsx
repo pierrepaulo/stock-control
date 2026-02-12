@@ -1,5 +1,13 @@
 "use client";
 
+import { ConfirmDialog } from "@/components/shared/confirm-dialog";
+import {
+  DataTable,
+  type DataTableColumn,
+} from "@/components/shared/data-table";
+import { DataTablePagination } from "@/components/shared/data-table-pagination";
+import { EmptyState } from "@/components/shared/empty-state";
+import { PageHeader } from "@/components/shared/page-header";
 import {
   useCategoriesWithProductCount,
   useCreateCategory,
@@ -8,16 +16,6 @@ import {
 } from "@/hooks/use-categories";
 import { formatDate } from "@/lib/format";
 import type { CategoryWithCount } from "@/types/category";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -37,19 +35,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Pencil, Plus, RefreshCcw, Trash2 } from "lucide-react";
+import { FolderTree, Pencil, Plus, RefreshCcw, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+
+const PAGE_SIZE = 10;
 
 const categoryFormSchema = z.object({
   name: z.string().trim().min(2, "Nome precisa ter ao menos 2 caracteres."),
@@ -64,48 +56,13 @@ const defaultCategoryValues: CategoryFormValues = {
 const getErrorMessage = (error: unknown, fallback: string) =>
   error instanceof Error ? error.message : fallback;
 
-function CategoriesTableSkeleton() {
-  return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Nome</TableHead>
-          <TableHead>Produtos</TableHead>
-          <TableHead>Criado em</TableHead>
-          <TableHead className="text-right">Acoes</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {Array.from({ length: 5 }).map((_, index) => (
-          <TableRow key={index}>
-            <TableCell>
-              <Skeleton className="h-4 w-40" />
-            </TableCell>
-            <TableCell>
-              <Skeleton className="h-4 w-10" />
-            </TableCell>
-            <TableCell>
-              <Skeleton className="h-4 w-24" />
-            </TableCell>
-            <TableCell className="text-right">
-              <div className="flex justify-end gap-2">
-                <Skeleton className="h-8 w-8" />
-                <Skeleton className="h-8 w-8" />
-              </div>
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
-  );
-}
-
 export default function CategoriasPage() {
   const categoriesQuery = useCategoriesWithProductCount();
   const createCategoryMutation = useCreateCategory();
   const updateCategoryMutation = useUpdateCategory();
   const deleteCategoryMutation = useDeleteCategory();
 
+  const [offset, setOffset] = useState(0);
   const [isFormDialogOpen, setIsFormDialogOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<CategoryWithCount | null>(
     null
@@ -124,6 +81,16 @@ export default function CategoriasPage() {
   const isDeleteSubmitting = deleteCategoryMutation.isPending;
 
   const categories = categoriesQuery.data ?? [];
+  const maxOffset =
+    categories.length > 0
+      ? Math.floor((categories.length - 1) / PAGE_SIZE) * PAGE_SIZE
+      : 0;
+  const safeOffset = Math.min(offset, maxOffset);
+  const currentPageCategories = categories.slice(
+    safeOffset,
+    safeOffset + PAGE_SIZE
+  );
+  const hasMore = safeOffset + PAGE_SIZE < categories.length;
 
   const handleFormDialogOpenChange = (open: boolean) => {
     setIsFormDialogOpen(open);
@@ -176,21 +143,73 @@ export default function CategoriasPage() {
     }
   };
 
+  const columns: DataTableColumn<CategoryWithCount>[] = [
+    {
+      id: "name",
+      header: "Nome",
+      cell: (category) => <span className="font-medium">{category.name}</span>,
+      skeleton: <Skeleton className="h-4 w-40" />,
+    },
+    {
+      id: "productCount",
+      header: "Produtos",
+      cell: (category) => category.productCount,
+      skeleton: <Skeleton className="h-4 w-10" />,
+    },
+    {
+      id: "createdAt",
+      header: "Criado em",
+      cell: (category) => formatDate(category.createdAt),
+      skeleton: <Skeleton className="h-4 w-24" />,
+    },
+    {
+      id: "actions",
+      header: "Acoes",
+      headerClassName: "text-right",
+      cellClassName: "text-right",
+      cell: (category) => (
+        <div className="flex justify-end gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            size="icon-sm"
+            onClick={() => handleEditClick(category)}
+            aria-label={`Editar categoria ${category.name}`}
+          >
+            <Pencil className="size-4" />
+          </Button>
+          <Button
+            type="button"
+            variant="destructive"
+            size="icon-sm"
+            onClick={() => setCategoryToDelete(category)}
+            aria-label={`Excluir categoria ${category.name}`}
+          >
+            <Trash2 className="size-4" />
+          </Button>
+        </div>
+      ),
+      skeleton: (
+        <div className="flex justify-end gap-2">
+          <Skeleton className="h-8 w-8" />
+          <Skeleton className="h-8 w-8" />
+        </div>
+      ),
+    },
+  ];
+
   return (
     <main className="space-y-6">
-      <section className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="space-y-1">
-          <h1 className="text-2xl font-semibold tracking-tight">Categorias</h1>
-          <p className="text-muted-foreground text-sm">
-            Crie, edite e organize as categorias dos produtos.
-          </p>
-        </div>
-
-        <Button onClick={handleCreateClick}>
-          <Plus className="size-4" />
-          Nova categoria
-        </Button>
-      </section>
+      <PageHeader
+        title="Categorias"
+        description="Crie, edite e organize as categorias dos produtos."
+        action={
+          <Button onClick={handleCreateClick}>
+            <Plus className="size-4" />
+            Nova categoria
+          </Button>
+        }
+      />
 
       <Card>
         <CardHeader>
@@ -200,80 +219,58 @@ export default function CategoriasPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {categoriesQuery.isLoading ? (
-            <CategoriesTableSkeleton />
-          ) : categoriesQuery.isError ? (
-            <div className="space-y-3 rounded-lg border border-red-200 bg-red-50 p-4">
-              <p className="text-sm font-medium text-red-700">
-                Nao foi possivel carregar as categorias.
-              </p>
-              <p className="text-sm text-red-700">
-                {getErrorMessage(
-                  categoriesQuery.error,
-                  "Erro inesperado ao consultar categorias."
-                )}
-              </p>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => {
-                  void categoriesQuery.refetch();
-                }}
-              >
-                <RefreshCcw className="size-4" />
-                Tentar novamente
-              </Button>
-            </div>
+          {categoriesQuery.isError ? (
+            <EmptyState
+              tone="danger"
+              title="Nao foi possivel carregar as categorias."
+              description={getErrorMessage(
+                categoriesQuery.error,
+                "Erro inesperado ao consultar categorias."
+              )}
+              icon={<RefreshCcw className="size-5" />}
+              action={
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    void categoriesQuery.refetch();
+                  }}
+                >
+                  <RefreshCcw className="size-4" />
+                  Tentar novamente
+                </Button>
+              }
+            />
           ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Nome</TableHead>
-                  <TableHead>Produtos</TableHead>
-                  <TableHead>Criado em</TableHead>
-                  <TableHead className="text-right">Acoes</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {categories.length === 0 ? (
-                  <TableRow>
-                    <TableCell colSpan={4} className="text-muted-foreground h-24 text-center">
-                      Nenhuma categoria cadastrada ainda.
-                    </TableCell>
-                  </TableRow>
-                ) : (
-                  categories.map((category) => (
-                    <TableRow key={category.id}>
-                      <TableCell className="font-medium">{category.name}</TableCell>
-                      <TableCell>{category.productCount}</TableCell>
-                      <TableCell>{formatDate(category.createdAt)}</TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex justify-end gap-2">
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="icon-sm"
-                            onClick={() => handleEditClick(category)}
-                            aria-label={`Editar categoria ${category.name}`}
-                          >
-                            <Pencil className="size-4" />
-                          </Button>
-                          <Button
-                            type="button"
-                            variant="destructive"
-                            size="icon-sm"
-                            onClick={() => setCategoryToDelete(category)}
-                            aria-label={`Excluir categoria ${category.name}`}
-                          >
-                            <Trash2 className="size-4" />
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))
-                )}
-              </TableBody>
-            </Table>
+            <>
+              <DataTable
+                columns={columns}
+                data={currentPageCategories}
+                getRowId={(category) => category.id}
+                isLoading={categoriesQuery.isLoading}
+                loadingRowCount={5}
+                emptyState={
+                  <EmptyState
+                    title="Nenhuma categoria cadastrada."
+                    description="Crie a primeira categoria para organizar os produtos."
+                    icon={<FolderTree className="size-5" />}
+                  />
+                }
+              />
+
+              {!categoriesQuery.isLoading && categories.length > 0 ? (
+                <div className="mt-4">
+                  <DataTablePagination
+                    offset={safeOffset}
+                    limit={PAGE_SIZE}
+                    hasMore={hasMore}
+                    onOffsetChange={(nextOffset) =>
+                      setOffset(Math.min(nextOffset, maxOffset))
+                    }
+                  />
+                </div>
+              ) : null}
+            </>
           )}
         </CardContent>
       </Card>
@@ -333,40 +330,23 @@ export default function CategoriasPage() {
         </DialogContent>
       </Dialog>
 
-      <AlertDialog
+      <ConfirmDialog
         open={Boolean(categoryToDelete)}
         onOpenChange={(open) => {
           if (!open && !isDeleteSubmitting) {
             setCategoryToDelete(null);
           }
         }}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Excluir categoria</AlertDialogTitle>
-            <AlertDialogDescription>
-              {categoryToDelete
-                ? `Deseja excluir a categoria "${categoryToDelete.name}"?`
-                : "Deseja excluir esta categoria?"}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel disabled={isDeleteSubmitting}>
-              Cancelar
-            </AlertDialogCancel>
-            <AlertDialogAction
-              variant="destructive"
-              disabled={isDeleteSubmitting}
-              onClick={(event) => {
-                event.preventDefault();
-                void handleDeleteConfirm();
-              }}
-            >
-              {isDeleteSubmitting ? "Excluindo..." : "Excluir"}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+        title="Excluir categoria"
+        description={
+          categoryToDelete
+            ? `Deseja excluir a categoria "${categoryToDelete.name}"?`
+            : "Deseja excluir esta categoria?"
+        }
+        confirmLabel="Excluir"
+        isConfirming={isDeleteSubmitting}
+        onConfirm={handleDeleteConfirm}
+      />
     </main>
   );
 }
