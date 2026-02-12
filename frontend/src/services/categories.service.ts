@@ -12,16 +12,23 @@ export interface ListCategoriesParams {
 
 export const categoriesService = {
   list: (params?: ListCategoriesParams) =>
-    apiClient.get<Category[] | CategoryWithCount[]>("/categories", { params }),
+    apiClient.get<Category[] | CategoryWithCount[], Category[] | CategoryWithCount[]>(
+      "/categories",
+      { params }
+    ),
 
-  getById: (id: string) => apiClient.get<Category>(`/categories/${id}`),
+  listWithProductCount: () =>
+    apiClient.get<CategoryWithCount[], CategoryWithCount[]>("/categories", {
+      params: { includeProductCount: true },
+    }),
+
+  getById: (id: string) => apiClient.get<Category, Category>(`/categories/${id}`),
 
   create: (data: CreateCategoryInput) =>
-    apiClient.post<Category>("/categories", data),
+    apiClient.post<Category, Category>("/categories", data),
 
   update: (id: string, data: UpdateCategoryInput) =>
-    apiClient.put<Category>(`/categories/${id}`, data),
+    apiClient.put<Category, Category>(`/categories/${id}`, data),
 
-  delete: (id: string) => apiClient.delete<null>(`/categories/${id}`),
+  delete: (id: string) => apiClient.delete<null, null>(`/categories/${id}`),
 };
-
