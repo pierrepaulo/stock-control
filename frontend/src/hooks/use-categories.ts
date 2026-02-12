@@ -14,11 +14,18 @@ import { toast } from "sonner";
 
 export const categoryQueryKeys = {
   all: ["categories"] as const,
+  list: ["categories", "list"] as const,
   withProductCount: ["categories", "with-product-count"] as const,
 };
 
 const getErrorMessage = (error: unknown, fallback: string) =>
   error instanceof Error ? error.message : fallback;
+
+export const useCategories = () =>
+  useQuery({
+    queryKey: categoryQueryKeys.list,
+    queryFn: () => categoriesService.listSimple(),
+  });
 
 export const useCategoriesWithProductCount = () =>
   useQuery({

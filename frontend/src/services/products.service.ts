@@ -12,16 +12,15 @@ export interface ListProductsParams extends PaginationParams {
 
 export const productsService = {
   list: (params?: ListProductsParams) =>
-    apiClient.get<Product[]>("/products", { params }),
+    apiClient.get<Product[], Product[]>("/products", { params }),
 
-  getById: (id: string) => apiClient.get<Product>(`/products/${id}`),
+  getById: (id: string) => apiClient.get<Product, Product>(`/products/${id}`),
 
   create: (data: CreateProductInput) =>
-    apiClient.post<Product>("/products", data),
+    apiClient.post<Product, Product>("/products", data),
 
   update: (id: string, data: UpdateProductInput) =>
-    apiClient.put<Product>(`/products/${id}`, data),
+    apiClient.put<Product, Product>(`/products/${id}`, data),
 
-  delete: (id: string) => apiClient.delete<null>(`/products/${id}`),
+  delete: (id: string) => apiClient.delete<null, null>(`/products/${id}`),
 };
-

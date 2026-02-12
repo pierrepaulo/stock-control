@@ -17,6 +17,8 @@ export const categoriesService = {
       { params }
     ),
 
+  listSimple: () => apiClient.get<Category[], Category[]>("/categories"),
+
   listWithProductCount: () =>
     apiClient.get<CategoryWithCount[], CategoryWithCount[]>("/categories", {
       params: { includeProductCount: true },
