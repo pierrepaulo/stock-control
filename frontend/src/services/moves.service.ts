@@ -8,8 +8,7 @@ export interface ListMovesParams extends PaginationParams {
 
 export const movesService = {
   list: (params?: ListMovesParams) =>
-    apiClient.get<Move[]>("/moves", { params }),
+    apiClient.get<Move[], Move[]>("/moves", { params }),
 
-  create: (data: CreateMoveInput) => apiClient.post<Move>("/moves", data),
+  create: (data: CreateMoveInput) => apiClient.post<Move, Move>("/moves", data),
 };
-
