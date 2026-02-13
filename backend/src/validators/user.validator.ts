@@ -1,5 +1,11 @@
 import z from "zod";
 
+const multipartBooleanSchema = z.preprocess((value) => {
+  if (value === "true") return true;
+  if (value === "false") return false;
+  return value;
+}, z.boolean());
+
 export const createUserSchema = z.object({
   name: z.string().min(2, "Nome é obrigatorio"),
   email: z.email("Formato de e-mail inválido"),
@@ -22,6 +28,11 @@ export const updateUserSchema = z.object({
     .string()
     .min(6, "Senha deve ter pelo menos 6 caracteres")
     .optional(),
-  isAdmin: z.boolean().optional(),
+  isAdmin: multipartBooleanSchema.optional(),
+  avatar: z.string().nullable().optional(),
+});
+
+export const updateProfileSchema = z.object({
+  name: z.string().min(2, "Nome é obrigatorio").optional(),
   avatar: z.string().nullable().optional(),
 });

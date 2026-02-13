@@ -35,6 +35,28 @@
         example: "atualizado@email.com",
       },
       password: { type: "string", minLength: 6, example: "novaSenha123" },
+      isAdmin: { type: "boolean", example: true },
+      avatar: {
+        type: "string",
+        format: "binary",
+        description: "Arquivo JPEG/PNG/JPG com limite de 5MB.",
+      },
+    },
+  },
+  UpdateProfileJsonRequest: {
+    type: "object",
+    description:
+      "Schema restrito para edicao do proprio perfil (non-admin). Apenas name e avatar sao permitidos.",
+    properties: {
+      name: { type: "string", minLength: 2, example: "Meu Novo Nome" },
+    },
+  },
+  UpdateProfileMultipartRequest: {
+    type: "object",
+    description:
+      "Schema restrito para edicao do proprio perfil via multipart (non-admin). Apenas name e avatar sao permitidos.",
+    properties: {
+      name: { type: "string", minLength: 2, example: "Meu Novo Nome" },
       avatar: {
         type: "string",
         format: "binary",
@@ -85,6 +107,7 @@ export const userPaths = {
     post: {
       tags: ["Users"],
       summary: "Cria um usuario",
+      description: "Apenas administradores podem criar usuarios.",
       security: [{ bearerAuth: [] }],
       requestBody: {
         required: true,
@@ -117,6 +140,18 @@ export const userPaths = {
           content: {
             "application/json": {
               schema: { $ref: "#/components/schemas/UnauthorizedError" },
+            },
+          },
+        },
+        403: {
+          description: "Permissao insuficiente (apenas admin)",
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/ErrorResponse" },
+              example: {
+                error: "Apenas administradores podem gerenciar usuarios",
+                data: null,
+              },
             },
           },
         },
@@ -229,7 +264,10 @@ export const userPaths = {
       tags: ["Users"],
       summary: "Atualiza usuario",
       description:
-        "Aceita JSON para atualizacao padrao e multipart/form-data para upload de avatar.",
+        "Aceita JSON para atualizacao padrao e multipart/form-data para upload de avatar. " +
+        "Administradores podem atualizar qualquer usuario com todos os campos (name, email, password, isAdmin, avatar). " +
+        "Usuarios non-admin podem editar apenas o proprio perfil, restrito aos campos name e avatar. " +
+        "Retorna 403 quando non-admin tenta editar outro usuario.",
       security: [{ bearerAuth: [] }],
       parameters: [
         {
@@ -241,12 +279,25 @@ export const userPaths = {
       ],
       requestBody: {
         required: false,
+        description:
+          "Admin: todos os campos (UpdateUserJsonRequest / UpdateUserMultipartRequest). " +
+          "Non-admin editando proprio perfil: apenas name e avatar (UpdateProfileJsonRequest / UpdateProfileMultipartRequest).",
         content: {
           "application/json": {
-            schema: { $ref: "#/components/schemas/UpdateUserJsonRequest" },
+            schema: {
+              oneOf: [
+                { $ref: "#/components/schemas/UpdateUserJsonRequest" },
+                { $ref: "#/components/schemas/UpdateProfileJsonRequest" },
+              ],
+            },
           },
           "multipart/form-data": {
-            schema: { $ref: "#/components/schemas/UpdateUserMultipartRequest" },
+            schema: {
+              oneOf: [
+                { $ref: "#/components/schemas/UpdateUserMultipartRequest" },
+                { $ref: "#/components/schemas/UpdateProfileMultipartRequest" },
+              ],
+            },
           },
         },
       },
@@ -276,6 +327,19 @@ export const userPaths = {
             },
           },
         },
+        403: {
+          description:
+            "Non-admin tentando editar outro usuario",
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/ErrorResponse" },
+              example: {
+                error: "Apenas administradores podem gerenciar usuarios",
+                data: null,
+              },
+            },
+          },
+        },
         404: {
           description: "Usuario nao encontrado",
           content: {
@@ -298,6 +362,7 @@ export const userPaths = {
     delete: {
       tags: ["Users"],
       summary: "Deleta usuario (soft delete)",
+      description: "Apenas administradores podem deletar usuarios.",
       security: [{ bearerAuth: [] }],
       parameters: [
         {
@@ -321,6 +386,18 @@ export const userPaths = {
           content: {
             "application/json": {
               schema: { $ref: "#/components/schemas/UnauthorizedError" },
+            },
+          },
+        },
+        403: {
+          description: "Permissao insuficiente (apenas admin)",
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/ErrorResponse" },
+              example: {
+                error: "Apenas administradores podem gerenciar usuarios",
+                data: null,
+              },
             },
           },
         },

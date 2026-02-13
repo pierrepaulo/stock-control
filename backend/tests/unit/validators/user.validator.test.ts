@@ -4,6 +4,7 @@ import {
   listUsersSchema,
   getUserByIdSchema,
   updateUserSchema,
+  updateProfileSchema,
 } from "../../../src/validators/user.validator.js";
 
 describe("createUserSchema", () => {
@@ -66,5 +67,43 @@ describe("updateUserSchema", () => {
 
     expect(result.avatar).toBeNull();
     expect(result.isAdmin).toBe(true);
+  });
+
+  it("aceita isAdmin string de multipart e converte para boolean", () => {
+    const resultTrue = updateUserSchema.parse({ isAdmin: "true" });
+    const resultFalse = updateUserSchema.parse({ isAdmin: "false" });
+
+    expect(resultTrue.isAdmin).toBe(true);
+    expect(resultFalse.isAdmin).toBe(false);
+  });
+
+  it("rejeita isAdmin string invalida", () => {
+    expect(() => updateUserSchema.parse({ isAdmin: "yes" })).toThrow();
+  });
+});
+
+describe("updateProfileSchema", () => {
+  it("aceita name e avatar opcionais", () => {
+    const result = updateProfileSchema.parse({
+      name: "Novo Nome",
+      avatar: "avatar.jpg",
+    });
+
+    expect(result.name).toBe("Novo Nome");
+    expect(result.avatar).toBe("avatar.jpg");
+  });
+
+  it("aceita objeto vazio (todos opcionais)", () => {
+    const result = updateProfileSchema.parse({});
+    expect(result).toEqual({});
+  });
+
+  it("aceita avatar nullable", () => {
+    const result = updateProfileSchema.parse({ avatar: null });
+    expect(result.avatar).toBeNull();
+  });
+
+  it("rejeita name com menos de 2 caracteres", () => {
+    expect(() => updateProfileSchema.parse({ name: "A" })).toThrow();
   });
 });
