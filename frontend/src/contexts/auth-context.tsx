@@ -20,6 +20,7 @@ interface AuthContextValue {
   isAuthenticated: boolean;
   login: (credentials: LoginCredentials) => Promise<void>;
   logout: () => Promise<void>;
+  updateUser: (data: Partial<AuthUser>) => void;
 }
 
 export const AuthContext = createContext<AuthContextValue | undefined>(
@@ -59,6 +60,15 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(nextUser));
 
     setUser(nextUser);
+  }, []);
+
+  const updateUser = useCallback((data: Partial<AuthUser>) => {
+    setUser((prev) => {
+      if (!prev) return prev;
+      const next = { ...prev, ...data };
+      localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(next));
+      return next;
+    });
   }, []);
 
   const logout = useCallback(async () => {
@@ -130,8 +140,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       isAuthenticated: Boolean(user),
       login,
       logout,
+      updateUser,
     }),
-    [user, isLoading, login, logout]
+    [user, isLoading, login, logout, updateUser]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
