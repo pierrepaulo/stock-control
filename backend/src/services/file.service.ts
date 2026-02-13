@@ -33,5 +33,9 @@ export const deleteAvatar = async (fileName: string) => {
   if (!fileName) return;
 
   const filePath = path.join(AVATAR_DIR, fileName);
-  await fs.unlink(filePath);
+  try {
+    await fs.unlink(filePath);
+  } catch {
+    // Arquivo já não existe no disco — segue normalmente
+  }
 };
