@@ -21,6 +21,8 @@ interface UserTableProps {
   onOffsetChange: (offset: number) => void;
   onEdit: (user: User) => void;
   onDelete: (user: User) => void;
+  canEdit: (user: User) => boolean;
+  canDelete: (user: User) => boolean;
 }
 
 const getErrorMessage = (error: unknown, fallback: string) =>
@@ -48,6 +50,8 @@ export function UserTable({
   onOffsetChange,
   onEdit,
   onDelete,
+  canEdit,
+  canDelete,
 }: UserTableProps) {
   const columns: DataTableColumn<User>[] = [
     {
@@ -92,28 +96,51 @@ export function UserTable({
       header: "Acoes",
       headerClassName: "text-right",
       cellClassName: "text-right",
-      cell: (user) => (
-        <div className="flex justify-end gap-2">
-          <Button
-            type="button"
-            variant="outline"
-            size="icon-sm"
-            onClick={() => onEdit(user)}
-            aria-label={`Editar usuario ${user.name}`}
-          >
-            <Pencil className="size-4" />
-          </Button>
-          <Button
-            type="button"
-            variant="destructive"
-            size="icon-sm"
-            onClick={() => onDelete(user)}
-            aria-label={`Excluir usuario ${user.name}`}
-          >
-            <Trash2 className="size-4" />
-          </Button>
-        </div>
-      ),
+      cell: (user) => {
+        const canEditCurrentUser = canEdit(user);
+        const canDeleteCurrentUser = canDelete(user);
+
+        return (
+          <div className="flex justify-end gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              size="icon-sm"
+              disabled={!canEditCurrentUser}
+              title={
+                canEditCurrentUser
+                  ? `Editar usuario ${user.name}`
+                  : "Sem permissao para editar este usuario"
+              }
+              onClick={() => {
+                if (!canEditCurrentUser) return;
+                onEdit(user);
+              }}
+              aria-label={`Editar usuario ${user.name}`}
+            >
+              <Pencil className="size-4" />
+            </Button>
+            <Button
+              type="button"
+              variant="destructive"
+              size="icon-sm"
+              disabled={!canDeleteCurrentUser}
+              title={
+                canDeleteCurrentUser
+                  ? `Excluir usuario ${user.name}`
+                  : "Apenas administradores podem excluir usuarios"
+              }
+              onClick={() => {
+                if (!canDeleteCurrentUser) return;
+                onDelete(user);
+              }}
+              aria-label={`Excluir usuario ${user.name}`}
+            >
+              <Trash2 className="size-4" />
+            </Button>
+          </div>
+        );
+      },
       skeleton: (
         <div className="flex justify-end gap-2">
           <Skeleton className="h-8 w-8" />
@@ -169,4 +196,3 @@ export function UserTable({
     </>
   );
 }
-

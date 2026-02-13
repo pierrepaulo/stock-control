@@ -12,6 +12,8 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import { useAuth } from "@/hooks/use-auth";
+import { canAccessUsersPage } from "@/lib/permissions/users";
 import { ChartNoAxesColumn, FolderTree, House, Package, Users } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -21,6 +23,7 @@ interface NavigationItem {
   href: string;
   label: string;
   icon: ComponentType<{ className?: string }>;
+  requiresAdmin?: boolean;
 }
 
 const navigationItems: NavigationItem[] = [
@@ -28,7 +31,7 @@ const navigationItems: NavigationItem[] = [
   { href: "/produtos", label: "Produtos", icon: Package },
   { href: "/categorias", label: "Categorias", icon: FolderTree },
   { href: "/movimentacoes", label: "Movimentacoes", icon: ChartNoAxesColumn },
-  { href: "/usuarios", label: "Usuarios", icon: Users },
+  { href: "/usuarios", label: "Usuarios", icon: Users, requiresAdmin: true },
 ];
 
 const isItemActive = (pathname: string, href: string) =>
@@ -36,6 +39,8 @@ const isItemActive = (pathname: string, href: string) =>
 
 export function AppSidebar() {
   const pathname = usePathname();
+  const { user } = useAuth();
+  const canAccessUsers = canAccessUsersPage(user);
 
   return (
     <Sidebar collapsible="offcanvas" variant="inset">
@@ -56,16 +61,34 @@ export function AppSidebar() {
           <SidebarGroupLabel>Navegacao</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {navigationItems.map((item) => (
-                <SidebarMenuItem key={item.href}>
-                  <SidebarMenuButton asChild isActive={isItemActive(pathname, item.href)}>
-                    <Link href={item.href}>
-                      <item.icon className="size-4" />
-                      <span>{item.label}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              {navigationItems.map((item) => {
+                const isRestricted = item.requiresAdmin === true && !canAccessUsers;
+
+                return (
+                  <SidebarMenuItem key={item.href}>
+                    {isRestricted ? (
+                      <SidebarMenuButton
+                        disabled
+                        aria-disabled
+                        title="Apenas administradores podem acessar esta pagina"
+                      >
+                        <item.icon className="size-4" />
+                        <span>{item.label}</span>
+                      </SidebarMenuButton>
+                    ) : (
+                      <SidebarMenuButton
+                        asChild
+                        isActive={isItemActive(pathname, item.href)}
+                      >
+                        <Link href={item.href}>
+                          <item.icon className="size-4" />
+                          <span>{item.label}</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    )}
+                  </SidebarMenuItem>
+                );
+              })}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

@@ -21,20 +21,26 @@ import {
   useUpdateUser,
   useUsers,
 } from "@/hooks/use-users";
+import { useAuth } from "@/hooks/use-auth";
+import { canAccessUsersPage } from "@/lib/permissions/users";
 import type { UpdateUserInput, User } from "@/types/user";
 import { Plus } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
 const PAGE_SIZE = 10;
 const QUERY_LIMIT = PAGE_SIZE + 1;
 
 export default function UsuariosPage() {
+  const { user: currentUser, isLoading } = useAuth();
+  const router = useRouter();
   const [offset, setOffset] = useState(0);
   const [isFormDialogOpen, setIsFormDialogOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [userToDelete, setUserToDelete] = useState<User | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const isCurrentUserAdmin = canAccessUsersPage(currentUser);
 
   const usersQueryParams = useMemo(
     () => ({
@@ -55,6 +61,26 @@ export default function UsuariosPage() {
   const isFormSubmitting =
     createUserMutation.isPending || updateUserMutation.isPending;
   const isDeleteSubmitting = deleteUserMutation.isPending;
+  const canEditEmail =
+    editingUser === null ? true : isCurrentUserAdmin;
+
+  useEffect(() => {
+    if (!isLoading && !isCurrentUserAdmin) {
+      router.replace("/");
+    }
+  }, [isLoading, isCurrentUserAdmin, router]);
+
+  if (isLoading) {
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center">
+        <p className="text-sm text-zinc-600">Validando permissao...</p>
+      </div>
+    );
+  }
+
+  if (!isCurrentUserAdmin) {
+    return null;
+  }
 
   const handleFormDialogOpenChange = (open: boolean) => {
     setIsFormDialogOpen(open);
@@ -72,14 +98,27 @@ export default function UsuariosPage() {
   };
 
   const handleEditClick = (user: User) => {
+    if (!isCurrentUserAdmin) {
+      return;
+    }
+
     setEditingUser(user);
     setSubmitError(null);
     setIsFormDialogOpen(true);
   };
 
+  const handleDeleteClick = (user: User) => {
+    if (!isCurrentUserAdmin) {
+      return;
+    }
+
+    setUserToDelete(user);
+  };
+
   const buildUpdatePayload = (
     formValues: UserFormValues,
-    currentUser: User
+    currentUser: User,
+    canEditEmail: boolean
   ): UpdateUserInput => {
     const payload: UpdateUserInput = {};
 
@@ -87,7 +126,7 @@ export default function UsuariosPage() {
       payload.name = formValues.name;
     }
 
-    if (formValues.email !== currentUser.email) {
+    if (canEditEmail && formValues.email !== currentUser.email) {
       payload.email = formValues.email;
     }
 
@@ -111,7 +150,7 @@ export default function UsuariosPage() {
 
     try {
       if (editingUser) {
-        const payload = buildUpdatePayload(values, editingUser);
+        const payload = buildUpdatePayload(values, editingUser, canEditEmail);
 
         if (Object.keys(payload).length === 0) {
           toast.info("Nenhuma alteracao detectada.");
@@ -142,7 +181,7 @@ export default function UsuariosPage() {
   };
 
   const handleDeleteConfirm = async () => {
-    if (!userToDelete) {
+    if (!userToDelete || !isCurrentUserAdmin) {
       return;
     }
 
@@ -160,7 +199,15 @@ export default function UsuariosPage() {
         title="Usuarios"
         description="Gerencie contas, permissoes de administrador e avatar."
         action={
-          <Button onClick={handleCreateClick}>
+          <Button
+            onClick={handleCreateClick}
+            disabled={!isCurrentUserAdmin}
+            title={
+              isCurrentUserAdmin
+                ? "Criar novo usuario"
+                : "Apenas administradores podem criar usuarios"
+            }
+          >
             <Plus className="size-4" />
             Novo usuario
           </Button>
@@ -190,7 +237,9 @@ export default function UsuariosPage() {
             }}
             onOffsetChange={setOffset}
             onEdit={handleEditClick}
-            onDelete={setUserToDelete}
+            onDelete={handleDeleteClick}
+            canEdit={() => isCurrentUserAdmin}
+            canDelete={() => isCurrentUserAdmin}
           />
         </CardContent>
       </Card>
@@ -199,6 +248,7 @@ export default function UsuariosPage() {
         open={isFormDialogOpen}
         onOpenChange={handleFormDialogOpenChange}
         editingUser={editingUser}
+        canEditEmail={canEditEmail}
         isSubmitting={isFormSubmitting}
         submitError={submitError}
         onSubmit={handleSubmit}

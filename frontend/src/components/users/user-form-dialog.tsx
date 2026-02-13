@@ -47,6 +47,7 @@ interface UserFormDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   editingUser: User | null;
+  canEditEmail: boolean;
   isSubmitting: boolean;
   submitError: string | null;
   onSubmit: (values: UserFormValues) => Promise<void>;
@@ -56,6 +57,7 @@ export function UserFormDialog({
   open,
   onOpenChange,
   editingUser,
+  canEditEmail,
   isSubmitting,
   submitError,
   onSubmit,
@@ -147,9 +149,21 @@ export function UserFormDialog({
 
           <div className="space-y-2">
             <Label htmlFor="user-email">E-mail</Label>
-            <Input id="user-email" type="email" {...form.register("email")} />
+            <Input
+              id="user-email"
+              type="email"
+              readOnly={!canEditEmail}
+              aria-readonly={!canEditEmail}
+              className={!canEditEmail ? "bg-muted cursor-not-allowed" : undefined}
+              {...form.register("email")}
+            />
             {form.formState.errors.email?.message ? (
               <p className="text-sm text-red-600">{form.formState.errors.email.message}</p>
+            ) : null}
+            {!canEditEmail ? (
+              <p className="text-muted-foreground text-xs">
+                Apenas administradores podem alterar o e-mail.
+              </p>
             ) : null}
           </div>
 
