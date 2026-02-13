@@ -32,19 +32,19 @@ export type ListUsersParams = PaginationParams;
 
 export const usersService = {
   list: (params?: ListUsersParams) =>
-    apiClient.get<User[]>("/users", { params }),
+    apiClient.get<User[], User[]>("/users", { params }),
 
-  getById: (id: string) => apiClient.get<User>(`/users/${id}`),
+  getById: (id: string) => apiClient.get<User, User>(`/users/${id}`),
 
-  create: (data: CreateUserInput) => apiClient.post<User>("/users", data),
+  create: (data: CreateUserInput) =>
+    apiClient.post<User, User>("/users", data),
 
   update: (id: string, data: UpdateUserInput) =>
-    apiClient.put<User>(`/users/${id}`, buildUserUpdateFormData(data), {
+    apiClient.put<User, User>(`/users/${id}`, buildUserUpdateFormData(data), {
       headers: {
         "Content-Type": "multipart/form-data",
       },
     }),
 
-  delete: (id: string) => apiClient.delete<null>(`/users/${id}`),
+  delete: (id: string) => apiClient.delete<null, null>(`/users/${id}`),
 };
-
