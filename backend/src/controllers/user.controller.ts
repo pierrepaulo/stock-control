@@ -33,7 +33,7 @@ export const listUsers: RequestHandler = async (req, res) => {
 export const getUser: RequestHandler = async (req, res) => {
   const { id } = getUserByIdSchema.parse(req.params);
   const user = await userService.getUserByIdPublic(id);
-  if (!user) throw new AppError("UsuÃ¡rio nÃ£o encontrado", 404);
+  if (!user) throw new AppError("Usuário não encontrado", 404);
   res.status(200).json({ error: null, data: user });
 };
 
@@ -67,7 +67,7 @@ export const deleteUser: RequestHandler = async (req, res) => {
 
   const { id } = getUserByIdSchema.parse(req.params);
   const deletedUser = await userService.deleteUser(id);
-  if (!deletedUser) throw new AppError("UsuÃ¡rio nÃ£o encontrado", 404);
+  if (!deletedUser) throw new AppError("Usuário não encontrado", 404);
   res.status(200).json({ error: null, data: null });
 };
 
