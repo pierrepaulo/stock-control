@@ -19,13 +19,12 @@ export const getMovesSummary = async (range: DateRangeInput) => {
   const conditions = [];
 
   if (range.startDate) {
-    const startDate = new Date(range.startDate);
+    const startDate = new Date(range.startDate + "T00:00:00");
     conditions.push(gte(moves.createdAt, startDate));
   }
 
   if (range.endDate) {
-    const endDate = new Date(range.endDate);
-    endDate.setHours(23, 59, 59, 999);
+    const endDate = new Date(range.endDate + "T23:59:59.999");
     conditions.push(lte(moves.createdAt, endDate));
   }
 
@@ -58,13 +57,12 @@ export const getMovesGraph = async (range: DateRangeInput) => {
   const conditions = [eq(moves.type, "out")];
 
   if (range.startDate) {
-    const startDate = new Date(range.startDate);
+    const startDate = new Date(range.startDate + "T00:00:00");
     conditions.push(gte(moves.createdAt, startDate));
   }
 
   if (range.endDate) {
-    const endDate = new Date(range.endDate);
-    endDate.setHours(23, 59, 59, 999);
+    const endDate = new Date(range.endDate + "T23:59:59.999");
     conditions.push(lte(moves.createdAt, endDate));
   }
 
@@ -101,13 +99,12 @@ export const getStagnantProducts = async (range: DateRangeInput) => {
   const conditions = [eq(moves.type, "out")];
 
   if (range.startDate) {
-    const startDate = new Date(range.startDate);
+    const startDate = new Date(range.startDate + "T00:00:00");
     conditions.push(gte(moves.createdAt, startDate));
   }
 
   if (range.endDate) {
-    const endDate = new Date(range.endDate);
-    endDate.setHours(23, 59, 59, 999);
+    const endDate = new Date(range.endDate + "T23:59:59.999");
     conditions.push(lte(moves.createdAt, endDate));
   }
 
