@@ -5,17 +5,22 @@ import type { ProductRaw } from "@/types/product";
 
 export const dashboardService = {
   getInventoryValue: () =>
-    apiClient.get<InventoryValue>("/dashboard/inventory-value"),
+    apiClient.get<InventoryValue, InventoryValue>("/dashboard/inventory-value"),
 
   getMovesSummary: (params?: DateRangeParams) =>
-    apiClient.get<MovesSummary>("/dashboard/moves-summary", { params }),
+    apiClient.get<MovesSummary, MovesSummary>("/dashboard/moves-summary", {
+      params,
+    }),
 
   getMovesGraph: (params?: DateRangeParams) =>
-    apiClient.get<MovesGraphPoint[]>("/dashboard/moves-graph", { params }),
+    apiClient.get<MovesGraphPoint[], MovesGraphPoint[]>("/dashboard/moves-graph", {
+      params,
+    }),
 
-  getLowStock: () => apiClient.get<ProductRaw[]>("/dashboard/low-stock"),
+  getLowStock: () => apiClient.get<ProductRaw[], ProductRaw[]>("/dashboard/low-stock"),
 
   getStagnantProducts: (params?: DateRangeParams) =>
-    apiClient.get<ProductRaw[]>("/dashboard/stagnant-products", { params }),
+    apiClient.get<ProductRaw[], ProductRaw[]>("/dashboard/stagnant-products", {
+      params,
+    }),
 };
-
