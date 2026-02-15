@@ -39,7 +39,7 @@ export function UserNav() {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-auto gap-2 px-2 py-1.5">
-            <Avatar size="sm">
+            <Avatar size="sm" className="ring-2 ring-border">
               <AvatarImage src={user.avatar ?? undefined} alt={`Avatar de ${user.name}`} />
               <AvatarFallback>{initials}</AvatarFallback>
             </Avatar>
