@@ -43,7 +43,7 @@ export function DataTable<TData>({
       <TableHeader>
         <TableRow>
           {columns.map((column) => (
-            <TableHead key={column.id} className={column.headerClassName}>
+            <TableHead key={column.id} className={cn("bg-muted/50 text-xs font-medium uppercase tracking-wider", column.headerClassName)}>
               {column.header}
             </TableHead>
           ))}
@@ -68,7 +68,7 @@ export function DataTable<TData>({
 
         {!isLoading && data.length > 0
           ? data.map((row, index) => (
-              <TableRow key={getRowId(row, index)}>
+              <TableRow key={getRowId(row, index)} className="hover:bg-muted/30">
                 {columns.map((column) => (
                   <TableCell
                     key={`${column.id}-${getRowId(row, index)}`}

@@ -23,17 +23,19 @@ export function StatCard({
   isLoading = false,
 }: StatCardProps) {
   return (
-    <Card className={cn("gap-4", className)}>
+    <Card className={cn("gap-4 border-l-4 border-l-primary", className)}>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium">{title}</CardTitle>
-        <div className="text-muted-foreground">{icon}</div>
+        <CardTitle className="text-muted-foreground text-xs font-medium uppercase tracking-wider">{title}</CardTitle>
+        <div className="bg-primary/10 text-primary flex size-8 items-center justify-center rounded-full">
+          {icon}
+        </div>
       </CardHeader>
 
       <CardContent className="space-y-1">
         {isLoading ? (
           <Skeleton className="h-8 w-28" />
         ) : (
-          <p className="text-2xl font-semibold tracking-tight">{value}</p>
+          <p className="font-mono-data text-2xl font-semibold tracking-tight">{value}</p>
         )}
 
         {description ? (

@@ -121,7 +121,7 @@ export default function CategoriasPage() {
         <CardHeader>
           <CardTitle>Lista de categorias</CardTitle>
           <CardDescription>
-            Exibindo categorias com contagem de produtos (`includeProductCount=true`).
+            Organize seus produtos por categorias com contagem de itens.
           </CardDescription>
         </CardHeader>
 

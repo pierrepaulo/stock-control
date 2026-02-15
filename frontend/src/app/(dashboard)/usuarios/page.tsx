@@ -218,7 +218,7 @@ export default function UsuariosPage() {
         <CardHeader>
           <CardTitle>Lista de usuarios</CardTitle>
           <CardDescription>
-            Criacao, edicao com campos opcionais e upload de avatar via multipart.
+            Gerencie contas de acesso, permissoes e informacoes de perfil.
           </CardDescription>
         </CardHeader>
 

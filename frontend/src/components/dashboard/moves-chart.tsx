@@ -108,13 +108,14 @@ export function MovesChart({ dateRange }: MovesChartProps) {
               {chartData.length === 1 ? (
                 <BarChart
                   data={chartData}
-                  margin={{ top: 10, right: 8, left: 8, bottom: 0 }}
+                  margin={{ top: 10, right: 8, left: 8, bottom: 10 }}
                 >
                   <CartesianGrid vertical={false} strokeDasharray="3 3" />
                   <XAxis
                     dataKey="shortDate"
                     tickLine={false}
                     axisLine={false}
+                    tick={{ dy: 12 }}
                   />
                   <YAxis
                     tickLine={false}
@@ -142,7 +143,7 @@ export function MovesChart({ dateRange }: MovesChartProps) {
               ) : (
                 <AreaChart
                   data={chartData}
-                  margin={{ top: 10, right: 8, left: 8, bottom: 0 }}
+                  margin={{ top: 10, right: 8, left: 8, bottom: 10 }}
                 >
                   <CartesianGrid vertical={false} strokeDasharray="3 3" />
                   <XAxis
@@ -150,6 +151,7 @@ export function MovesChart({ dateRange }: MovesChartProps) {
                     tickLine={false}
                     axisLine={false}
                     minTickGap={20}
+                    tick={{ dy: 12 }}
                   />
                   <YAxis
                     tickLine={false}
@@ -172,7 +174,7 @@ export function MovesChart({ dateRange }: MovesChartProps) {
                     name="Saidas"
                     stroke="var(--chart-1)"
                     fill="var(--chart-1)"
-                    fillOpacity={0.2}
+                    fillOpacity={0.15}
                   />
                 </AreaChart>
               )}

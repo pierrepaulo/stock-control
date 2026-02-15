@@ -34,19 +34,19 @@ export function LowStockTable() {
     {
       id: "quantity",
       header: "Qtd atual",
-      cell: (product) => formatQuantity(product.quantity),
+      cell: (product) => <span className="font-mono-data">{formatQuantity(product.quantity)}</span>,
       skeleton: <Skeleton className="h-4 w-16" />,
     },
     {
       id: "minimumQuantity",
       header: "Qtd minima",
-      cell: (product) => formatQuantity(product.minimumQuantity),
+      cell: (product) => <span className="font-mono-data">{formatQuantity(product.minimumQuantity)}</span>,
       skeleton: <Skeleton className="h-4 w-16" />,
     },
     {
       id: "unitPrice",
       header: "Preco unit.",
-      cell: (product) => formatCurrency(product.unitPrice),
+      cell: (product) => <span className="font-mono-data">{formatCurrency(product.unitPrice)}</span>,
       skeleton: <Skeleton className="h-4 w-20" />,
     },
     {
@@ -60,8 +60,8 @@ export function LowStockTable() {
             variant="outline"
             className={cn(
               critical
-                ? "border-red-200 bg-red-100 text-red-700"
-                : "border-amber-200 bg-amber-100 text-amber-800"
+                ? "border-red-200 bg-red-100 text-red-700 dark:border-red-800 dark:bg-red-950 dark:text-red-400"
+                : "border-amber-200 bg-amber-100 text-amber-800 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-400"
             )}
           >
             {critical ? "Critico" : "Alerta"}
@@ -73,7 +73,7 @@ export function LowStockTable() {
   ];
 
   return (
-    <Card>
+    <Card className="min-w-0">
       <CardHeader>
         <CardTitle>Estoque baixo</CardTitle>
         <CardDescription>

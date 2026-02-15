@@ -14,12 +14,12 @@ interface EmptyStateProps {
 
 const toneStyles: Record<EmptyStateTone, string> = {
   default: "border-border bg-background text-foreground",
-  danger: "border-red-200 bg-red-50 text-red-700",
+  danger: "border-red-200 bg-red-50 text-red-700 dark:border-red-800 dark:bg-red-950 dark:text-red-400",
 };
 
 const toneMutedStyles: Record<EmptyStateTone, string> = {
   default: "text-muted-foreground",
-  danger: "text-red-700",
+  danger: "text-red-700 dark:text-red-400",
 };
 
 export function EmptyState({

@@ -27,13 +27,13 @@ export function MovesSummaryCard({ dateRange }: MovesSummaryCardProps) {
       <StatCard
         title="Entradas"
         value={hasError ? "--" : formatCurrency(entriesValue)}
-        icon={<ArrowDownCircle className="size-4 text-green-600" />}
+        icon={<ArrowDownCircle className="size-4 text-emerald-600" />}
         description={
           hasError
             ? "Nao foi possivel carregar os dados."
             : formatMovesCount(entriesCount)
         }
-        className="border-green-200/70 bg-green-50/40"
+        className="border-l-emerald-500 bg-emerald-50/50 dark:bg-emerald-950/20"
         isLoading={movesSummaryQuery.isLoading}
       />
 
@@ -46,7 +46,7 @@ export function MovesSummaryCard({ dateRange }: MovesSummaryCardProps) {
             ? "Nao foi possivel carregar os dados."
             : formatMovesCount(exitsCount)
         }
-        className="border-red-200/70 bg-red-50/40"
+        className="border-l-red-500 bg-red-50/50 dark:bg-red-950/20"
         isLoading={movesSummaryQuery.isLoading}
       />
     </>

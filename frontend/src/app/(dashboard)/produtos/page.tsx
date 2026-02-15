@@ -166,7 +166,7 @@ export default function ProdutosPage() {
           <div className="space-y-1">
             <CardTitle>Lista de produtos</CardTitle>
             <CardDescription>
-              Busca por nome com debounce, paginacao e conversao de preco em centavos.
+              Visualize, busque e gerencie todos os seus produtos.
             </CardDescription>
           </div>
           <ProductSearch value={searchInput} onChange={handleSearchChange} />

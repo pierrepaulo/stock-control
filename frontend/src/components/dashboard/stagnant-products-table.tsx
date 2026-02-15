@@ -34,26 +34,26 @@ export function StagnantProductsTable({ dateRange }: StagnantProductsTableProps)
     {
       id: "quantity",
       header: "Qtd em estoque",
-      cell: (product) => formatQuantity(product.quantity),
+      cell: (product) => <span className="font-mono-data">{formatQuantity(product.quantity)}</span>,
       skeleton: <Skeleton className="h-4 w-16" />,
     },
     {
       id: "unitPrice",
       header: "Preco unit.",
-      cell: (product) => formatCurrency(product.unitPrice),
+      cell: (product) => <span className="font-mono-data">{formatCurrency(product.unitPrice)}</span>,
       skeleton: <Skeleton className="h-4 w-20" />,
     },
     {
       id: "totalValue",
       header: "Valor total",
       cell: (product) =>
-        formatCurrency(parseNumericString(product.quantity) * product.unitPrice),
+        <span className="font-mono-data">{formatCurrency(parseNumericString(product.quantity) * product.unitPrice)}</span>,
       skeleton: <Skeleton className="h-4 w-24" />,
     },
   ];
 
   return (
-    <Card>
+    <Card className="min-w-0">
       <CardHeader>
         <CardTitle>Produtos estagnados</CardTitle>
         <CardDescription>
