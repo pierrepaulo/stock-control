@@ -117,8 +117,8 @@ describe("dashboard.service (integration)", () => {
       endDate.setDate(endDate.getDate() + 1);
 
       const result = await dashboardService.getMovesSummary({
-        startDate: startDate.toISOString(),
-        endDate: endDate.toISOString(),
+        startDate: startDate.toISOString().split("T")[0],
+        endDate: endDate.toISOString().split("T")[0],
       });
 
       expect(Number(result.in.count)).toBe(1);
@@ -259,8 +259,8 @@ describe("dashboard.service (integration)", () => {
       endDate.setDate(endDate.getDate() + 1);
 
       const result = await dashboardService.getStagnantProducts({
-        startDate: startDate.toISOString(),
-        endDate: endDate.toISOString(),
+        startDate: startDate.toISOString().split("T")[0],
+        endDate: endDate.toISOString().split("T")[0],
       });
 
       expect(result).toHaveLength(1);
@@ -288,8 +288,8 @@ describe("dashboard.service (integration)", () => {
       endDate.setDate(endDate.getDate() + 1);
 
       const result = await dashboardService.getStagnantProducts({
-        startDate: startDate.toISOString(),
-        endDate: endDate.toISOString(),
+        startDate: startDate.toISOString().split("T")[0],
+        endDate: endDate.toISOString().split("T")[0],
       });
 
       const names = result.map((p) => p.name);
