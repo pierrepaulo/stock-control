@@ -147,6 +147,22 @@ describe("Users E2E", () => {
       expect(res.body.data).toHaveProperty("avatar");
     });
 
+    it("400 quando tipo de arquivo nao permitido", async () => {
+      const { user, token } = await createAuthenticatedUser(testDb.db, {
+        isAdmin: true,
+      });
+
+      const fakeFile = Buffer.from("not-an-image");
+
+      const res = await supertest(app)
+        .put(`/api/users/${user.id}`)
+        .set("Authorization", getAuthHeader(token))
+        .field("name", "Teste Arquivo Invalido")
+        .attach("avatar", fakeFile, "document.pdf");
+
+      expect(res.status).toBeGreaterThanOrEqual(400);
+    });
+
     it("403 quando non-admin tenta atualizar outro usuario", async () => {
       const { token } = await createAuthenticatedUser(testDb.db, {
         isAdmin: false,

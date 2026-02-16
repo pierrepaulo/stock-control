@@ -157,6 +157,53 @@ describe("dashboard.service (integration)", () => {
       expect(totalValue).toBe(5000); // 5 * 1000
     });
 
+    it("filtra por date range", async () => {
+      const user = await insertUser(testDb.db);
+      const category = await insertCategory(testDb.db);
+      const product = await insertProduct(testDb.db, category.id, {
+        unitPrice: 200,
+        quantity: "100",
+      });
+
+      const now = new Date();
+      const yesterday = new Date(now);
+      yesterday.setDate(yesterday.getDate() - 1);
+      const twoDaysAgo = new Date(now);
+      twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
+
+      // Move inside the range (yesterday)
+      await insertMove(testDb.db, product.id, user.id, {
+        type: "out",
+        quantity: "4",
+        unitPrice: 200,
+        createdAt: yesterday,
+      });
+
+      // Move outside the range (2 days ago)
+      await insertMove(testDb.db, product.id, user.id, {
+        type: "out",
+        quantity: "10",
+        unitPrice: 200,
+        createdAt: twoDaysAgo,
+      });
+
+      const startDate = new Date(now);
+      startDate.setDate(startDate.getDate() - 1);
+      const endDate = new Date(now);
+
+      const result = await dashboardService.getMovesGraph({
+        startDate: startDate.toISOString().split("T")[0],
+        endDate: endDate.toISOString().split("T")[0],
+      });
+
+      const totalValue = result.reduce(
+        (sum: number, r: any) => sum + Number(r.totalValue),
+        0,
+      );
+      // Only the yesterday move (4 * 200 = 800) should be included
+      expect(totalValue).toBe(800);
+    });
+
     it("ordena por data ASC", async () => {
       const user = await insertUser(testDb.db);
       const category = await insertCategory(testDb.db);
@@ -234,6 +281,19 @@ describe("dashboard.service (integration)", () => {
   });
 
   describe("getStagnantProducts", () => {
+    it("retorna todos produtos sem moves 'out' quando sem date range", async () => {
+      const category = await insertCategory(testDb.db);
+      await insertProduct(testDb.db, category.id, {
+        name: "Parado",
+        quantity: "20",
+      });
+
+      const result = await dashboardService.getStagnantProducts({});
+
+      expect(result).toHaveLength(1);
+      expect(result[0].name).toBe("Parado");
+    });
+
     it("retorna produtos sem moves 'out' no periodo", async () => {
       const user = await insertUser(testDb.db);
       const category = await insertCategory(testDb.db);
