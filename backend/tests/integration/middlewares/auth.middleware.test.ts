@@ -69,6 +69,18 @@ describe("authMiddleware (integration)", () => {
     expect(error.statusCode).toBe(401);
   });
 
+  it("401 para scheme diferente de Bearer", async () => {
+    const req = createMockReq({ authorization: "Basic some_token" });
+    const res = createMockRes();
+    const next = vi.fn();
+
+    await authMiddleware(req, res, next);
+
+    expect(next).toHaveBeenCalledWith(expect.any(AppError));
+    const error = next.mock.calls[0][0] as AppError;
+    expect(error.statusCode).toBe(401);
+  });
+
   it("401 para token invalido/desconhecido", async () => {
     const req = createMockReq({
       authorization: "Bearer token_invalido_123456",
