@@ -15,20 +15,99 @@ Sistema completo de gerenciamento de estoque com controle de produtos, categoria
 - **103 testes automatizados** — unitários, integração e E2E
 - **CI/CD** com GitHub Actions
 
+## Screenshots
+
+Clique em qualquer imagem para abrir em tamanho maior.
+
+<table>
+  <tr>
+    <td align="center" width="50%">
+      <a href="./.github/assets/stockcontrol/dashboard.png">
+        <img
+          src="./.github/assets/stockcontrol/dashboard.png"
+          alt="Dashboard do sistema"
+          width="100%"
+        />
+      </a>
+      <br />
+      <sub><strong>Dashboard</strong></sub>
+    </td>
+    <td align="center" width="50%">
+      <a href="./.github/assets/stockcontrol/produtos.png">
+        <img
+          src="./.github/assets/stockcontrol/produtos.png"
+          alt="Tela de produtos"
+          width="100%"
+        />
+      </a>
+      <br />
+      <sub><strong>Produtos</strong></sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="50%">
+      <a href="./.github/assets/stockcontrol/add-produto.png">
+        <img
+          src="./.github/assets/stockcontrol/add-produto.png"
+          alt="Formulario de cadastro de produto"
+          width="100%"
+        />
+      </a>
+      <br />
+      <sub><strong>Adicionar Produto</strong></sub>
+    </td>
+    <td align="center" width="50%">
+      <a href="./.github/assets/stockcontrol/categorias.png">
+        <img
+          src="./.github/assets/stockcontrol/categorias.png"
+          alt="Tela de categorias"
+          width="100%"
+        />
+      </a>
+      <br />
+      <sub><strong>Categorias</strong></sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="50%">
+      <a href="./.github/assets/stockcontrol/movimentacoes.png">
+        <img
+          src="./.github/assets/stockcontrol/movimentacoes.png"
+          alt="Tela de movimentacoes"
+          width="100%"
+        />
+      </a>
+      <br />
+      <sub><strong>Movimentacoes</strong></sub>
+    </td>
+    <td align="center" width="50%">
+      <a href="./.github/assets/stockcontrol/usuarios.png">
+        <img
+          src="./.github/assets/stockcontrol/usuarios.png"
+          alt="Tela de usuarios"
+          width="100%"
+        />
+      </a>
+      <br />
+      <sub><strong>Usuarios</strong></sub>
+    </td>
+  </tr>
+</table>
+
 ## Tech Stack
 
-| Backend | Frontend |
-|---|---|
-| Node.js 20+ | Next.js 16 (App Router) |
-| Express 5 | React 19 |
-| TypeScript 5 | TypeScript 5 |
-| Drizzle ORM | TanStack React Query 5 |
-| PostgreSQL 16 | React Hook Form 7 + Zod 4 |
-| Zod 4 | Tailwind CSS 4 |
-| Vitest 4 + Testcontainers | shadcn/ui + Radix UI |
-| Swagger UI | Recharts 3 |
-| Sharp + Multer | Axios |
-| Bcrypt | date-fns |
+| Backend                   | Frontend                  |
+| ------------------------- | ------------------------- |
+| Node.js 20+               | Next.js 16 (App Router)   |
+| Express 5                 | React 19                  |
+| TypeScript 5              | TypeScript 5              |
+| Drizzle ORM               | TanStack React Query 5    |
+| PostgreSQL 16             | React Hook Form 7 + Zod 4 |
+| Zod 4                     | Tailwind CSS 4            |
+| Vitest 4 + Testcontainers | shadcn/ui + Radix UI      |
+| Swagger UI                | Recharts 3                |
+| Sharp + Multer            | Axios                     |
+| Bcrypt                    | date-fns                  |
 
 ## Arquitetura
 
@@ -104,47 +183,47 @@ npm run dev
 
 ### Backend (`backend/.env`)
 
-| Variável | Descrição | Exemplo |
-|---|---|---|
-| `PORT` | Porta do servidor | `3001` |
-| `NODE_ENV` | Ambiente de execução | `development` |
+| Variável       | Descrição                 | Exemplo                                                      |
+| -------------- | ------------------------- | ------------------------------------------------------------ |
+| `PORT`         | Porta do servidor         | `3001`                                                       |
+| `NODE_ENV`     | Ambiente de execução      | `development`                                                |
 | `DATABASE_URL` | URL de conexão PostgreSQL | `postgresql://postgres:postgres@localhost:5432/stockcontrol` |
-| `BASE_URL` | URL base do servidor | `http://localhost:3001` |
+| `BASE_URL`     | URL base do servidor      | `http://localhost:3001`                                      |
 
 ### Frontend (`frontend/.env.local`)
 
-| Variável | Descrição | Exemplo |
-|---|---|---|
+| Variável              | Descrição          | Exemplo                     |
+| --------------------- | ------------------ | --------------------------- |
 | `NEXT_PUBLIC_API_URL` | URL da API backend | `http://localhost:3001/api` |
 
 ## Scripts
 
 ### Backend
 
-| Script | Descrição |
-|---|---|
-| `npm run dev` | Inicia o servidor em modo desenvolvimento (com hot reload) |
-| `npm run build` | Compila o TypeScript para JavaScript |
-| `npm start` | Inicia o servidor compilado em produção |
-| `npm run db:generate` | Gera migrations do Drizzle |
-| `npm run db:migrate` | Executa migrations pendentes |
-| `npm run db:push` | Sincroniza o schema diretamente no banco |
-| `npm run db:studio` | Abre o Drizzle Studio (interface visual do banco) |
-| `npm test` | Executa todos os testes |
-| `npm run test:watch` | Executa testes em modo watch |
-| `npm run test:unit` | Executa apenas testes unitários |
-| `npm run test:integration` | Executa apenas testes de integração |
-| `npm run test:e2e` | Executa apenas testes E2E |
-| `npm run test:coverage` | Executa testes com relatório de cobertura |
+| Script                     | Descrição                                                  |
+| -------------------------- | ---------------------------------------------------------- |
+| `npm run dev`              | Inicia o servidor em modo desenvolvimento (com hot reload) |
+| `npm run build`            | Compila o TypeScript para JavaScript                       |
+| `npm start`                | Inicia o servidor compilado em produção                    |
+| `npm run db:generate`      | Gera migrations do Drizzle                                 |
+| `npm run db:migrate`       | Executa migrations pendentes                               |
+| `npm run db:push`          | Sincroniza o schema diretamente no banco                   |
+| `npm run db:studio`        | Abre o Drizzle Studio (interface visual do banco)          |
+| `npm test`                 | Executa todos os testes                                    |
+| `npm run test:watch`       | Executa testes em modo watch                               |
+| `npm run test:unit`        | Executa apenas testes unitários                            |
+| `npm run test:integration` | Executa apenas testes de integração                        |
+| `npm run test:e2e`         | Executa apenas testes E2E                                  |
+| `npm run test:coverage`    | Executa testes com relatório de cobertura                  |
 
 ### Frontend
 
-| Script | Descrição |
-|---|---|
-| `npm run dev` | Inicia o Next.js em modo desenvolvimento |
-| `npm run build` | Gera o build de produção |
-| `npm start` | Inicia o servidor de produção |
-| `npm run lint` | Executa o ESLint |
+| Script          | Descrição                                |
+| --------------- | ---------------------------------------- |
+| `npm run dev`   | Inicia o Next.js em modo desenvolvimento |
+| `npm run build` | Gera o build de produção                 |
+| `npm start`     | Inicia o servidor de produção            |
+| `npm run lint`  | Executa o ESLint                         |
 
 ## Estrutura do Projeto
 
@@ -248,64 +327,64 @@ Base URL: `http://localhost:3001/api`
 
 ### Auth
 
-| Método | Rota | Descrição |
-|---|---|---|
-| `POST` | `/auth/login` | Autenticação do usuário |
-| `POST` | `/auth/logout` | Encerrar sessão |
-| `GET` | `/auth/me` | Dados do usuário autenticado |
+| Método | Rota           | Descrição                    |
+| ------ | -------------- | ---------------------------- |
+| `POST` | `/auth/login`  | Autenticação do usuário      |
+| `POST` | `/auth/logout` | Encerrar sessão              |
+| `GET`  | `/auth/me`     | Dados do usuário autenticado |
 
 ### Usuários
 
-| Método | Rota | Descrição |
-|---|---|---|
-| `POST` | `/users` | Criar usuário |
-| `GET` | `/users` | Listar usuários |
-| `GET` | `/users/:id` | Buscar usuário por ID |
-| `PUT` | `/users/:id` | Atualizar usuário (com avatar) |
-| `DELETE` | `/users/:id` | Remover usuário (soft-delete) |
+| Método   | Rota         | Descrição                      |
+| -------- | ------------ | ------------------------------ |
+| `POST`   | `/users`     | Criar usuário                  |
+| `GET`    | `/users`     | Listar usuários                |
+| `GET`    | `/users/:id` | Buscar usuário por ID          |
+| `PUT`    | `/users/:id` | Atualizar usuário (com avatar) |
+| `DELETE` | `/users/:id` | Remover usuário (soft-delete)  |
 
 ### Categorias
 
-| Método | Rota | Descrição |
-|---|---|---|
-| `POST` | `/categories` | Criar categoria |
-| `GET` | `/categories` | Listar categorias |
-| `GET` | `/categories/:id` | Buscar categoria por ID |
-| `PUT` | `/categories/:id` | Atualizar categoria |
+| Método   | Rota              | Descrição                       |
+| -------- | ----------------- | ------------------------------- |
+| `POST`   | `/categories`     | Criar categoria                 |
+| `GET`    | `/categories`     | Listar categorias               |
+| `GET`    | `/categories/:id` | Buscar categoria por ID         |
+| `PUT`    | `/categories/:id` | Atualizar categoria             |
 | `DELETE` | `/categories/:id` | Remover categoria (soft-delete) |
 
 ### Produtos
 
-| Método | Rota | Descrição |
-|---|---|---|
-| `POST` | `/products` | Criar produto |
-| `GET` | `/products` | Listar produtos |
-| `GET` | `/products/:id` | Buscar produto por ID |
-| `PUT` | `/products/:id` | Atualizar produto |
+| Método   | Rota            | Descrição                     |
+| -------- | --------------- | ----------------------------- |
+| `POST`   | `/products`     | Criar produto                 |
+| `GET`    | `/products`     | Listar produtos               |
+| `GET`    | `/products/:id` | Buscar produto por ID         |
+| `PUT`    | `/products/:id` | Atualizar produto             |
 | `DELETE` | `/products/:id` | Remover produto (soft-delete) |
 
 ### Movimentações
 
-| Método | Rota | Descrição |
-|---|---|---|
+| Método | Rota     | Descrição                              |
+| ------ | -------- | -------------------------------------- |
 | `POST` | `/moves` | Registrar movimentação (entrada/saída) |
-| `GET` | `/moves` | Listar movimentações |
+| `GET`  | `/moves` | Listar movimentações                   |
 
 ### Dashboard
 
-| Método | Rota | Descrição |
-|---|---|---|
-| `GET` | `/dashboard/inventory-value` | Valor total do estoque |
-| `GET` | `/dashboard/moves-summary` | Resumo de movimentações |
-| `GET` | `/dashboard/moves-graph` | Dados para gráfico de movimentações |
-| `GET` | `/dashboard/low-stock` | Produtos com estoque baixo |
-| `GET` | `/dashboard/stagnant-products` | Produtos sem movimentação recente |
+| Método | Rota                           | Descrição                           |
+| ------ | ------------------------------ | ----------------------------------- |
+| `GET`  | `/dashboard/inventory-value`   | Valor total do estoque              |
+| `GET`  | `/dashboard/moves-summary`     | Resumo de movimentações             |
+| `GET`  | `/dashboard/moves-graph`       | Dados para gráfico de movimentações |
+| `GET`  | `/dashboard/low-stock`         | Produtos com estoque baixo          |
+| `GET`  | `/dashboard/stagnant-products` | Produtos sem movimentação recente   |
 
 ### Health Check
 
-| Método | Rota | Descrição |
-|---|---|---|
-| `GET` | `/ping` | Verificação de saúde do servidor |
+| Método | Rota    | Descrição                        |
+| ------ | ------- | -------------------------------- |
+| `GET`  | `/ping` | Verificação de saúde do servidor |
 
 ## Banco de Dados
 
@@ -314,53 +393,57 @@ Base URL: `http://localhost:3001/api`
 O banco possui 4 tabelas principais:
 
 #### `users`
-| Coluna | Tipo | Descrição |
-|---|---|---|
-| `id` | UUID | Chave primária (auto-gerado) |
-| `name` | TEXT | Nome do usuário |
-| `email` | TEXT | Email (único) |
-| `password` | TEXT | Senha (hash bcrypt) |
-| `avatar` | TEXT | Caminho do avatar (opcional) |
-| `isAdmin` | BOOLEAN | Papel de administrador (default: false) |
-| `token` | TEXT | Token de autenticação (opcional) |
-| `deletedAt` | TIMESTAMP | Soft-delete |
-| `createdAt` | TIMESTAMP | Data de criação |
-| `updatedAt` | TIMESTAMP | Data de atualização |
+
+| Coluna      | Tipo      | Descrição                               |
+| ----------- | --------- | --------------------------------------- |
+| `id`        | UUID      | Chave primária (auto-gerado)            |
+| `name`      | TEXT      | Nome do usuário                         |
+| `email`     | TEXT      | Email (único)                           |
+| `password`  | TEXT      | Senha (hash bcrypt)                     |
+| `avatar`    | TEXT      | Caminho do avatar (opcional)            |
+| `isAdmin`   | BOOLEAN   | Papel de administrador (default: false) |
+| `token`     | TEXT      | Token de autenticação (opcional)        |
+| `deletedAt` | TIMESTAMP | Soft-delete                             |
+| `createdAt` | TIMESTAMP | Data de criação                         |
+| `updatedAt` | TIMESTAMP | Data de atualização                     |
 
 #### `categories`
-| Coluna | Tipo | Descrição |
-|---|---|---|
-| `id` | UUID | Chave primária (auto-gerado) |
-| `name` | TEXT | Nome da categoria |
-| `deletedAt` | TIMESTAMP | Soft-delete |
-| `createdAt` | TIMESTAMP | Data de criação |
-| `updatedAt` | TIMESTAMP | Data de atualização |
+
+| Coluna      | Tipo      | Descrição                    |
+| ----------- | --------- | ---------------------------- |
+| `id`        | UUID      | Chave primária (auto-gerado) |
+| `name`      | TEXT      | Nome da categoria            |
+| `deletedAt` | TIMESTAMP | Soft-delete                  |
+| `createdAt` | TIMESTAMP | Data de criação              |
+| `updatedAt` | TIMESTAMP | Data de atualização          |
 
 #### `products`
-| Coluna | Tipo | Descrição |
-|---|---|---|
-| `id` | UUID | Chave primária (auto-gerado) |
-| `name` | TEXT | Nome do produto |
-| `categoryId` | UUID | FK → categories.id |
-| `unitPrice` | INTEGER | Preço unitário (em centavos) |
-| `unitType` | ENUM | Tipo de unidade (kg, g, l, ml, un) |
-| `quantity` | NUMERIC | Quantidade atual (default: 0) |
-| `minimumQuantity` | NUMERIC | Quantidade mínima (default: 0) |
-| `maximumQuantity` | NUMERIC | Quantidade máxima (default: 0) |
-| `deletedAt` | TIMESTAMP | Soft-delete |
-| `createdAt` | TIMESTAMP | Data de criação |
-| `updatedAt` | TIMESTAMP | Data de atualização |
+
+| Coluna            | Tipo      | Descrição                          |
+| ----------------- | --------- | ---------------------------------- |
+| `id`              | UUID      | Chave primária (auto-gerado)       |
+| `name`            | TEXT      | Nome do produto                    |
+| `categoryId`      | UUID      | FK → categories.id                 |
+| `unitPrice`       | INTEGER   | Preço unitário (em centavos)       |
+| `unitType`        | ENUM      | Tipo de unidade (kg, g, l, ml, un) |
+| `quantity`        | NUMERIC   | Quantidade atual (default: 0)      |
+| `minimumQuantity` | NUMERIC   | Quantidade mínima (default: 0)     |
+| `maximumQuantity` | NUMERIC   | Quantidade máxima (default: 0)     |
+| `deletedAt`       | TIMESTAMP | Soft-delete                        |
+| `createdAt`       | TIMESTAMP | Data de criação                    |
+| `updatedAt`       | TIMESTAMP | Data de atualização                |
 
 #### `moves`
-| Coluna | Tipo | Descrição |
-|---|---|---|
-| `id` | UUID | Chave primária (auto-gerado) |
-| `productId` | UUID | FK → products.id |
-| `userId` | UUID | FK → users.id |
-| `type` | ENUM | Tipo (in = entrada, out = saída) |
-| `quantity` | NUMERIC | Quantidade movimentada |
-| `unitPrice` | INTEGER | Preço unitário no momento (em centavos) |
-| `createdAt` | TIMESTAMP | Data da movimentação |
+
+| Coluna      | Tipo      | Descrição                               |
+| ----------- | --------- | --------------------------------------- |
+| `id`        | UUID      | Chave primária (auto-gerado)            |
+| `productId` | UUID      | FK → products.id                        |
+| `userId`    | UUID      | FK → users.id                           |
+| `type`      | ENUM      | Tipo (in = entrada, out = saída)        |
+| `quantity`  | NUMERIC   | Quantidade movimentada                  |
+| `unitPrice` | INTEGER   | Preço unitário no momento (em centavos) |
+| `createdAt` | TIMESTAMP | Data da movimentação                    |
 
 ### Relacionamentos
 
@@ -384,12 +467,12 @@ products ──────┘
 
 ### Visão Geral
 
-| Tipo | Quantidade | Descrição |
-|---|---|---|
-| Unitários | 37 | Validators, middlewares, utils, file service |
-| Integração | 48 | Services com banco real (Testcontainers) |
-| E2E | 18 | Fluxos completos via HTTP (Supertest) |
-| **Total** | **103** | |
+| Tipo       | Quantidade | Descrição                                    |
+| ---------- | ---------- | -------------------------------------------- |
+| Unitários  | 37         | Validators, middlewares, utils, file service |
+| Integração | 48         | Services com banco real (Testcontainers)     |
+| E2E        | 18         | Fluxos completos via HTTP (Supertest)        |
+| **Total**  | **103**    |                                              |
 
 ### Ferramentas
 
